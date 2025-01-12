@@ -38,7 +38,7 @@ def sync(source, dest, logfile):
 	for root, dirs, files in os.walk(source):
 		# make relative paths from source and replica
 		rel_source = os.path.relpath(root, source)
-		dest_root = os.path.relpath(dest, rel_source)
+		dest_root = os.path.join(dest, rel_source)
 
 		# create directory structure in destination folder
 		if not os.path.exists(dest_root):
@@ -62,7 +62,7 @@ def sync(source, dest, logfile):
 			if os.path.exists(dest_file):
 				dest_md5 = calc_md5(dest_file)
 			else:
-				None
+				dest_md5 = None
 
 			# if checksum does not match, copy/replace
 			if source_md5 != dest_md5:
@@ -82,7 +82,7 @@ def sync(source, dest, logfile):
 		for file in files:
 			dest_file = os.path.join(root, file)
 			source_file = os.path.join(source_root, file)
-			if not os.path_exists(source_file):
+			if not os.path.exists(source_file):
 				os.remove(dest_file)
 				log(f"Deleted file: {dest_file}", logfile)
 		
@@ -90,7 +90,7 @@ def sync(source, dest, logfile):
 		for d in dirs:
 			dest_dir = os.path.join(root, d)
 			source_dir = os.path.join(source_root, d)
-			if not os.path_exists(source_dir):
+			if not os.path.exists(source_dir):
 				shutil.rmtree(dest_dir)
 				log(f"Deleted directory: {dest_dir}", logfile)
 
